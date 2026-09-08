@@ -6,8 +6,8 @@
  * sections §1 (Plugin Anatomy), §2 (Contributions), §3 (Configuration),
  * §6.5 (Server-Side Contributions), and §8.1 (Validation errors).
  *
- * v0.2.1 ships the type contract plus a `definePlugin` factory and a
- * `validatePlugin` build-time validator. The compiler dispatcher is a no-op
+ * Contract revision v0.2.1 ships the type contract plus a `definePlugin`
+ * factory and a `validatePlugin` build-time validator. The compiler dispatcher is a no-op
  * until v0.3+ wires block parsers, macro lowerings, and hook execution.
  *
  * Per Plugin Contract Spec §7.2: aihu does NOT auto-discover plugins.
@@ -274,8 +274,9 @@ export interface PluginConfig {
 }
 
 /**
- * Plugin instance — the registered, validated plugin. v0.2.1 keeps the same
- * shape as `PluginConfig`; future versions may add a discriminator brand.
+ * Plugin instance — the registered, validated plugin. Contract revision v0.2.1
+ * keeps the same shape as `PluginConfig`; future revisions may add a
+ * discriminator brand.
  */
 export interface Plugin extends PluginConfig {
   /** Brand to distinguish constructed plugins from raw config objects. */
@@ -329,7 +330,8 @@ export type ValidationResult =
  * Current aihu framework version against which `aihuVersion` ranges are
  * checked. Imported by `validatePlugin` for the §7.3 compatibility check.
  *
- * v0.2.1: `0.2.0` per the v1 framework plan (`@aihu/plugin` package version).
+ * The current framework compatibility version is `0.2.0`, independent of the
+ * npm package's patch release version.
  */
 export const AIHU_VERSION = '0.2.0'
 
