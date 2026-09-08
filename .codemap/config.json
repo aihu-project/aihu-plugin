@@ -1,19 +1,21 @@
 {
-  "only": ["ts", "rs", "aihu", "mjs", "js", "json", "toml", "yml", "yaml", "md"],
-  "exclude": [
-    "node_modules",
-    "target",
-    "coverage",
-    "dist",
-    "repos",
-    "apps/docs/.design-review",
-    "apps/docs/src/data/api/generated"
-  ],
-  "depth": 5,
+  "only": ["ts", "js", "json", "yml", "yaml", "md"],
+  "exclude": ["node_modules", "dist", "coverage"],
+  "depth": 4,
   "budgets": {},
   "routing": {
-    "retrieval": {}
+    "subsystems": [
+      {
+        "name": "contract",
+        "paths": ["src/**/*.ts", "tests/**/*.ts", "docs/**/*.md"],
+        "keywords": ["Plugin", "definePlugin", "validatePlugin", "AIHU_VERSION"],
+        "docs": ["README.md", "docs/superpowers/specs/2026-05-02-spec-plugin-contract.md"],
+        "note": "The public contract is coupled to generated declarations and consumer peer ranges; codemap cannot follow those package metadata and documentation strings as imports."
+      }
+    ]
   },
-  "drift": {},
+  "drift": {
+    "require_docs_for": ["contract"]
+  },
   "guidance": {}
 }

@@ -1,21 +1,12 @@
 # @aihu/plugin
 
-> **Aihu** — agentic discovery and interaction, for human purpose.
-
-Plugin substrate shared by @aihu/server and the meta-framework — runtime hook surface.
-
-Held-private workspace package. Not yet published to npm.
-
-> **Status:** Held private — not yet published to npm. See [v1.1 roadmap](../../docs/roadmap/SUMMARY.md) for ratification gating (e.g. RFC #56 live-binding for `@aihu/plugin` enforcement).
-
-<!-- BEGIN_HANDWRITTEN: prose -->
-_(Hand-written prose lives in this block. Replace this placeholder; everything below is auto-generated.)_
-<!-- END_HANDWRITTEN: prose -->
+The build-time plugin contract for aihu applications and opt-in extensions.
+It provides the typed contribution and hook surface used by the aihu compiler,
+server configuration, and plugin authors. It has no runtime dependencies and
+must be explicitly registered by an application; plugins are never discovered
+implicitly.
 
 ## Install
-
-<!-- BEGIN_AUTOGEN: install -->
-<!-- regenerate: bun scripts/sync-readme.ts (also runs in pre-commit + CI) -->
 
 ```bash
 npm install @aihu/plugin
@@ -23,70 +14,58 @@ npm install @aihu/plugin
 bun add @aihu/plugin
 ```
 
-<sub><i>Auto-generated against `@aihu/plugin@0.1.0`.</i></sub>
+## Define a plugin
 
-<!-- END_AUTOGEN: install -->
+```ts
+import { definePlugin } from '@aihu/plugin'
 
-## Package facts
+export default definePlugin({
+  name: 'forms',
+  version: '0.1.0',
+  namespace: 'forms',
+  contributes: {
+    blocks: ['fields'],
+    macros: [
+      {
+        name: '$field',
+        validIn: ['@forms.fields'],
+        lowering: () => 'createField()',
+      },
+    ],
+  },
+})
+```
 
-<!-- BEGIN_AUTOGEN: stats -->
-<!-- regenerate: bun scripts/sync-readme.ts (also runs in pre-commit + CI) -->
+`definePlugin` adds the package brand. The compiler or framework integration
+must call `validatePlugin` during registration so required fields, reserved
+namespaces, duplicate namespaces, and the declared `aihuVersion` range are
+checked at the build boundary.
 
-| | |
-|---|---|
-| **Version** | `0.1.0` |
-| **Tier** | E — Plugin substrate — runtime hook surface (held private until live-binding RATIFIES) |
-| **Published files** | 3 entries |
-| **License** | MIT |
+## Contract surface
 
-<sub><i>Auto-generated against `@aihu/plugin@0.1.0`.</i></sub>
+The public entry point exports build and SFC contexts, block parsers, macros,
+transforms, server-only runtime and middleware contributions, lifecycle hooks,
+`definePlugin`, `validatePlugin`, and `AIHU_VERSION`.
 
-<!-- END_AUTOGEN: stats -->
+The ratified contract references are retained in [`docs/superpowers/specs`](docs/superpowers/specs):
 
-## Exports
+- [Plugin Contract](docs/superpowers/specs/2026-05-02-spec-plugin-contract.md)
+- [Live Binding](docs/superpowers/specs/2026-05-05-spec-live-binding.md)
+- [Live Binding implementation notes](docs/superpowers/specs/live-binding-impl.md)
 
-<!-- BEGIN_AUTOGEN: exports -->
-<!-- regenerate: bun scripts/sync-readme.ts (also runs in pre-commit + CI) -->
+## Development
 
-| Subpath | ESM | CJS |
-|---|---|---|
-| `.` | `./dist/index.js` | `—` |
+This repository uses Bun 1.3.14 and Node 22.14.0 in CI.
 
-<sub><i>Auto-generated against `@aihu/plugin@0.1.0`.</i></sub>
+```bash
+bun install --frozen-lockfile
+bun run check:ci
+```
 
-<!-- END_AUTOGEN: exports -->
-
-## Dependencies
-
-<!-- BEGIN_AUTOGEN: deps -->
-<!-- regenerate: bun scripts/sync-readme.ts (also runs in pre-commit + CI) -->
-
-_Zero runtime dependencies_ (per the [dep-free thesis](../../README.md#project-posture))_._
-
-<sub><i>Auto-generated against `@aihu/plugin@0.1.0`.</i></sub>
-
-<!-- END_AUTOGEN: deps -->
-
-## See also
-
-<!-- BEGIN_AUTOGEN: see-also -->
-<!-- regenerate: bun scripts/sync-readme.ts (also runs in pre-commit + CI) -->
-
-- [Plugin Contract spec](../../docs/superpowers/specs/2026-05-02-spec-plugin-contract.md)
-- [Live-Binding RFC](../../docs/superpowers/specs/2026-05-05-spec-live-binding.md)
-- [Aihu framework root](../../README.md)
-
-<sub><i>Auto-generated against `@aihu/plugin@0.1.0`.</i></sub>
-
-<!-- END_AUTOGEN: see-also -->
+The release workflow only publishes an exact `v<package-version>` tag, requires
+the repository `NPM_TOKEN` secret, verifies npm authentication, and requests
+npm provenance through GitHub's OIDC token.
 
 ## License
 
-<!-- BEGIN_AUTOGEN: license -->
-<!-- regenerate: bun scripts/sync-readme.ts (also runs in pre-commit + CI) -->
-
-MIT — see [LICENSE](../../LICENSE).
-
-<sub><i>Auto-generated against `@aihu/plugin@0.1.0`.</i></sub>
-
-<!-- END_AUTOGEN: license -->
+MIT — see [LICENSE](LICENSE).
