@@ -47,6 +47,12 @@ The public entry point exports build and SFC contexts, block parsers, macros,
 transforms, server-only runtime and middleware contributions, lifecycle hooks,
 `definePlugin`, `validatePlugin`, and `AIHU_VERSION`.
 
+It also exports `RESERVED_NAMESPACES` — the list of namespace values a plugin
+must not use (checked by `validatePlugin`) — and `resetValidationState`, which
+clears `validatePlugin`'s duplicate-namespace tracker between build/registration
+passes (primarily useful in tests and in compiler implementations that run a
+fresh registration pass per build).
+
 The ratified contract references are retained in [`docs/superpowers/specs`](docs/superpowers/specs):
 
 - [Plugin Contract](docs/superpowers/specs/2026-05-02-spec-plugin-contract.md)
